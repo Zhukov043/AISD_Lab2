@@ -425,17 +425,26 @@ class RedBlackTree{
         Node(int key) {
             this.key = key;
             this.color = RED; // Новый узел всегда красный
+            this.left = nil;
+            this.right = nil;
+            this.parent = nil;
+        }
+        private Node(){
+            this.color = BLACK;
+            this.left = null;
+            this.right = null;
+            this.parent = null;
         }
     }
-
-    private Node root;
+    private static final Node nil = new Node();
+    private Node root = nil;
 
     //Height
     public int height() {
         return heightRec(root);
     }
     private int heightRec(RedBlackTree.Node node) {
-        if (node == null) {
+        if (node == nil) {
             return 0;
         }
         int leftHeight = heightRec(node.left);
@@ -448,13 +457,13 @@ class RedBlackTree{
         Node b = a.right;
         a.right = b.left;
 
-        if (b.left != null) {
+        if (b.left != nil) {
             b.left.parent = a;
         }
 
         b.parent = a.parent;
 
-        if (a.parent == null) {
+        if (a.parent == nil) {
             root = b;
         } else if (a == a.parent.left) {
             a.parent.left = b;
@@ -470,13 +479,13 @@ class RedBlackTree{
         Node b = a.left;
         a.left = b.right;
 
-        if (b.right != null) {
+        if (b.right != nil) {
             b.right.parent = a;
         }
 
         b.parent = a.parent;
 
-        if (a.parent == null) {
+        if (a.parent == nil) {
             root = b;
         } else if (a == a.parent.left) {
             a.parent.left = b;
@@ -495,7 +504,7 @@ class RedBlackTree{
         balanceInsert(newNode);
     }
     private Node insertKey(Node root, Node node) {
-        if (root == null) {
+        if (root == nil) {
             return node; // Возвращаем новый узел
         }
 
@@ -522,7 +531,7 @@ class RedBlackTree{
             if (parent == grandparent.left) { // Родитель — левый потомок
                 Node uncle = grandparent.right;
 
-                if (uncle != null && uncle.color == RED) { // Случай 1: Дядя красный
+                if (uncle != nil && uncle.color == RED) { // Случай 1: Дядя красный
                     grandparent.color = RED;
                     parent.color = BLACK;
                     uncle.color = BLACK;
@@ -570,13 +579,13 @@ class RedBlackTree{
     // Удаление элемента
     public void delete(int key) {
         Node node = searchNode(root, key);
-        if (node != null) {
+        if (node != nil) {
             deleteNode(node);
         }
     }
 
     private Node searchNode(Node root, int key) {
-        while (root != null) {
+        while (root != nil) {
             if (key < root.key) {
                 root = root.left;
             } else if (key > root.key) {
@@ -592,10 +601,10 @@ class RedBlackTree{
         Node x;
         boolean yOriginalColor = y.color;
 
-        if (node.left == null) {
+        if (node.left == nil) {
             x = node.right;
             transplant(node, node.right);
-        } else if (node.right == null) {
+        } else if (node.right == nil) {
             x = node.left;
             transplant(node, node.left);
         } else {
@@ -604,7 +613,7 @@ class RedBlackTree{
             x = y.right;
 
             if (y.parent == node) {
-                if (x != null) {
+                if (x != nil) {
                     x.parent = y;
                 }
             } else {
@@ -625,21 +634,18 @@ class RedBlackTree{
     }
 
     private void transplant(Node a, Node b) {
-        if (a.parent == null) {
+        if (a.parent == nil) {
             root = b;
         } else if (a == a.parent.left) {
             a.parent.left = b;
         } else {
             a.parent.right = b;
         }
-
-        if (b != null) {
-            b.parent = a.parent;
-        }
+        b.parent = a.parent;
     }
 
     private Node getMin(Node node) {
-        while (node.left != null) {
+        while (node.left != nil) {
             node = node.left;
         }
         return node;
@@ -704,13 +710,13 @@ class RedBlackTree{
             }
         }
 
-        if (x != null) {
+        if (x != nil) {
             x.color = BLACK;
         }
     }
 
     private boolean getColor(Node node) {
-        return node == null ? BLACK : node.color;
+        return node == nil ? BLACK : node.color;
     }
 
     //printTree
@@ -730,7 +736,7 @@ class RedBlackTree{
     }
     // Прямой обход (Pre-order)
     private void printPre(RedBlackTree.Node node) {
-        if (node != null) {
+        if (node != nil) {
             System.out.print(node.key + " "); // Посещение узла
             printPre(node.left);             // Левое поддерево
             printPre(node.right);            // Правое поддерево
@@ -738,7 +744,7 @@ class RedBlackTree{
     }
     // Симметричный обход (In-order)
     private void printIn(RedBlackTree.Node node) {
-        if (node != null) {
+        if (node != nil) {
             printIn(node.left);              // Левое поддерево
             System.out.print(node.key + " "); // Посещение узла
             printIn(node.right);             // Правое поддерево
@@ -746,7 +752,7 @@ class RedBlackTree{
     }
     // Обратный обход (Post-order)
     private void printPost(RedBlackTree.Node node) {
-        if (node != null) {
+        if (node != nil) {
             printPost(node.left);             // Левое поддерево
             printPost(node.right);            // Правое поддерево
             System.out.print(node.key + " "); // Посещение узла
@@ -754,7 +760,7 @@ class RedBlackTree{
     }
     // Уровневый обход (Level-order)
     public static void printLevel(RedBlackTree.Node root) {
-        if (root == null) {
+        if (root == nil) {
             return;
         }
 
@@ -765,11 +771,11 @@ class RedBlackTree{
             RedBlackTree.Node node = queue.poll(); // Извлечение узла
             System.out.print(node.key + " "); // Посещение узла
 
-            if (node.left != null) {
+            if (node.left != nil) {
                 queue.add(node.left); // Левый потомок
             }
 
-            if (node.right != null) {
+            if (node.right != nil) {
                 queue.add(node.right); // Правый потомок
             }
         }
@@ -823,6 +829,9 @@ class Main{
         System.out.println("AVL: ");
         AVLtree.printTree();
         System.out.println("RBT: ");
+        RBtree.delete(15);
+        RBtree.delete(6);
+        RBtree.delete(16);
         RBtree.printTree();
     }
 }
